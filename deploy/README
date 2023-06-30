@@ -1,0 +1,8 @@
+# Running the container
+
+Use the following command to run the container after building
+- Run a container based on your image:
+
+```bash
+docker run -d --name gp_inference -p 80:80 myimage
+```
