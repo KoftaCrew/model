@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import Depends, FastAPI
 from pydantic import BaseModel
-from model.model import Model
+from model.sbert import Model, __version__
 
 
 app = FastAPI()
@@ -19,11 +19,11 @@ class GradeResponse(BaseModel):
     
 
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
+def home():
+    return {"health_check": "OK", "grading_model_version": __version__}
 
 
-@app.post("/predict", response_model=GradeResponse)
-def predict(request: GradeRequest, model: Model = Depends(Model)):
+@app.post("/grade", response_model=GradeResponse)
+def predict_grade(request: GradeRequest, model: Model = Depends(Model)):
     question_pairs, scores = model.predict(request)
     return GradeResponse(question_pairs=question_pairs, scores=scores)
