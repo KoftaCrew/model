@@ -27,3 +27,8 @@ def home():
 def predict_grade(request: GradeRequest, model: Model = Depends(Model)):
     question_pairs, scores = model.predict(request)
     return GradeResponse(question_pairs=question_pairs, scores=scores)
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
