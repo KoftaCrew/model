@@ -1,16 +1,13 @@
 from sklearn.cluster import KMeans
-# from model.sbert import embedder, model
-from sentence_transformers import CrossEncoder
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer, util
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 class Model:
     def __init__(self):
-        self.scoring_model = CrossEncoder('assets/stsb-distilroberta-base', max_length=512)
-        self.embedder = SentenceTransformer('assets/all-MiniLM-L6-v2')
+        self.model = SentenceTransformer('assets/msmarco-distilbert-base-v4')
 
-    def cluster_pairs(self, model_answer, student_answer):
+    def _cluster_pairs(self, model_answer, student_answer):
         """
         Perform K-means clustering for model answer tokens student answer tokens
         instead of computing all possible combinations 
@@ -18,7 +15,7 @@ class Model:
         num_clusters = len(model_answer)
 
         corpus = model_answer + student_answer
-        corpus_embeddings = self.embedder.encode(corpus)
+        corpus_embeddings = self.model.encode(corpus)
 
         clustering_model = KMeans(n_clusters=num_clusters)
         clustering_model.fit(corpus_embeddings)
@@ -30,6 +27,14 @@ class Model:
 
         return clustered_sentences
 
+    def _score_answers(self, pairs):
+        scores = []
+        for entry in pairs:
+            e1 = self.model.encode(entry[0], convert_to_tensor=True)
+            e2 = self.model.encode(entry[1], convert_to_tensor=True)
+            scores.append(util.cos_sim(e1, e2))
+        return scores
+
     def predict(self, request):
-        ret = self.cluster_pairs(request.model_answer, request.student_answer)
-        return ret, list(self.scoring_model.predict(ret))
+        ret = self._cluster_pairs(request.model_answer, request.student_answer)
+        return ret, self._score_answers(ret)
