@@ -36,14 +36,10 @@ class SegmentRequest(BaseModel):
 
 class SegmentResponse(BaseModel):
     segements: List[List[int]]
-    cls: List[int]
 
 @app.post("/segment", response_model=SegmentResponse)
-def segment(request: SegmentRequest):
-    return SegmentResponse(
-        segements=[[0,10], [11, 20]],
-        cls=[0, 1]
-    )
+def segment(request: SegmentRequest, model: Model = Depends(Model)):
+    return SegmentResponse(segements=model.segment_text(request.answer))
 
 if __name__ == "__main__":
     import uvicorn
