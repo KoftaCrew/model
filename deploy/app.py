@@ -16,6 +16,7 @@ class GradeResponse(BaseModel):
     model_answer_ids: List[int]
     segmented_student_answer: List[List[int]]
     scores: List[float]
+    confidence: List[float]
 
 
 @app.get("/")
@@ -24,11 +25,12 @@ def home():
 
 @app.post("/grade", response_model=GradeResponse)
 def predict_grade(request: GradeRequest, model: Model = Depends(Model)):
-    # question_pairs, scores = model.predict(request)
+    model_answer_ids, student_answer_indicies, confidence, scores= model.predict(request)
     return GradeResponse(
-        model_answer_ids=[0, 1, 3],
-        segmented_student_answer=[[0, 4], [4, 10], [11, 20]],
-        scores=[0, 0, 1]
+        model_answer_ids=model_answer_ids,
+        segmented_student_answer=student_answer_indicies,
+        scores=scores,
+        confidence=confidence,
     )
 
 class SegmentRequest(BaseModel):
