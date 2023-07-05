@@ -43,7 +43,6 @@ class Model:
 
         current_embeddings_window = [embeddings[0]]
         last_cluster_end_index = 0
-        current_clusters = 0
         sentences_clusters = []
 
         for i, cur_e in enumerate(embeddings[1:], start=1):
@@ -53,10 +52,11 @@ class Model:
             if all_sim_scores > threshold:
                 current_embeddings_window.append(cur_e)
             else:
-                current_clusters += 1
                 sentences_clusters.append(sentences[last_cluster_end_index:i])
                 current_embeddings_window = [cur_e]
                 last_cluster_end_index = i
+
+        sentences_clusters.append(sentences[last_cluster_end_index:])
 
         def cluster_to_indicies(cluster):
             return [text.index(cluster[0]), text.index(cluster[-1]) + len(cluster[-1])]
