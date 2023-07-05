@@ -61,7 +61,7 @@ class Model:
         def cluster_to_indicies(cluster):
             return [text.index(cluster[0]), text.index(cluster[-1]) + len(cluster[-1])]
 
-        return [cluster_to_indicies(c) for c in sentences_clusters]
+        return [cluster_to_indicies(c) for c in sentences_clusters], sentences_clusters
 
     def predict(self, request):
         grade_dict = {k: v for k, v in zip(request.model_answer_ids, request.max_grades)}

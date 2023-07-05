@@ -41,7 +41,7 @@ class SegmentResponse(BaseModel):
 
 @app.post("/segment", response_model=SegmentResponse)
 def segment(request: SegmentRequest, model: Model = Depends(Model)):
-    return SegmentResponse(segments=model.segment_text(request.answer))
+    return SegmentResponse(segments=model.segment_text(request.answer)[0])
 
 if __name__ == "__main__":
     import uvicorn
