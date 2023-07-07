@@ -7,7 +7,7 @@ __version__ = "0.0.3"
 
 class Model:
     def __init__(self, grading_th_high=0.95, grading_th_low=0.65):
-        self.model = SentenceTransformer('assets/msmarco-distilbert-base-v4')
+        self.model = SentenceTransformer('assets/base_v1')
         self.nlp = spacy.load('en_core_web_sm')
         self.grading_threshold_high = float(grading_th_high)
         self.grading_threshold_low = float(grading_th_low)
@@ -39,7 +39,7 @@ class Model:
                 grade_scores.append(0)
         return confidence_list, grade_scores
     
-    def segment_text(self, text, threshold=0.5):
+    def segment_text(self, text, threshold=0.6):
         doc = self.nlp(text)
         sentences = [sent.text for sent in doc.sents]
         metric = torch.nn.CosineSimilarity(dim=0)
