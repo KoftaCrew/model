@@ -6,11 +6,11 @@ from sentence_transformers import SentenceTransformer, util
 __version__ = "0.0.3"
 
 class Model:
-    def __init__(self, grading_th_high=0.95, grading_th_low=0.50):
+    def __init__(self, grading_th_high=0.95, grading_th_low=0.65):
         self.model = SentenceTransformer('assets/msmarco-distilbert-base-v4')
         self.nlp = spacy.load('en_core_web_sm')
-        self.grading_threshold_high = grading_th_high
-        self.grading_threshold_low = grading_th_low
+        self.grading_threshold_high = float(grading_th_high)
+        self.grading_threshold_low = float(grading_th_low)
 
     def _cluster_pairs(self, model_answer, student_answer):
         pairs = []
@@ -28,10 +28,10 @@ class Model:
         for entry in pairs:
             e1 = self.model.encode(entry[0], convert_to_tensor=True)
             e2 = self.model.encode(entry[1], convert_to_tensor=True)
-            sim = util.cos_sim(e1, e2)
+            sim = torch.squeeze(util.cos_sim(e1, e2))
             confidence_list.append(sim)
             mapped_id = answer_to_id_dict[entry[0]]
-            if sim > self.grading_threshold_high:
+            if sim >= self.grading_threshold_high:
                 grade_scores.append(1)
             elif sim >= self.grading_threshold_low:
                 grade_scores.append(scores_dict[mapped_id] * sim)
