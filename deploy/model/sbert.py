@@ -3,7 +3,7 @@ import spacy
 import torch
 from sentence_transformers import SentenceTransformer, util
 
-__version__ = "0.0.3"
+__version__ = "2.0.0"
 
 class Model:
     def __init__(self, grading_th_high=0.95, grading_th_low=0.65):
