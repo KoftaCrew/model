@@ -7,7 +7,7 @@ __version__ = "2.0.0"
 
 class Model:
     def __init__(self, grading_th_high=0.95, grading_th_low=0.65):
-        self.model = SentenceTransformer('assets/base_v1')
+        self.model = SentenceTransformer('assets/base_v2')
         self.nlp = spacy.load('en_core_web_sm')
         self.grading_threshold_high = float(grading_th_high)
         self.grading_threshold_low = float(grading_th_low)
