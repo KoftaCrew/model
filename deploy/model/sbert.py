@@ -32,7 +32,7 @@ class Model:
             confidence_list.append(sim)
             mapped_id = answer_to_id_dict[entry[0]]
             if sim >= self.grading_threshold_high:
-                grade_scores.append(1)
+                grade_scores.append(scores_dict[mapped_id])
             elif sim >= self.grading_threshold_low:
                 grade_scores.append(scores_dict[mapped_id] * sim)
             else:
